@@ -10,38 +10,39 @@ import {
   postRequest,
 } from "../../utils/requestMethods";
 
-const getItemsFefchThunk = (actionType, apiURL) => {
+const getItemsFetchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (userId) => {
     // console.log(apiURL, userId);
-    const fullpath = `${apiURL}/${userId}`;
-    return await getRequest(fullpath);
+    const fullPath = `${apiURL}/${userId}`;
+    return await getRequest(fullPath);
   });
 };
 
-//get items data
-export const fetchGetItemsData = getItemsFefchThunk(
-  "fetchGetItems", //action type
-  GET_TASKS_API_URL //요청 url
-); //thunk 함수 호출
+// get items data
+export const fetchGetItemsData = getItemsFetchThunk(
+  "fetchGetItems", // action type
+  GET_TASKS_API_URL // 요청 url
+); // thunk 함수 호출
 
-const deleteItemFefchThunk = (actionType, apiURL) => {
+const deleteItemFetchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (id) => {
     // console.log(apiURL, id);
     const options = {
       method: "DELETE",
     };
-    const fullpath = `${apiURL}/${id}`;
-    return await deleteRequest(fullpath, options);
+    const fullPath = `${apiURL}/${id}`;
+    return await deleteRequest(fullPath, options);
   });
 };
 
 // delete item
-export const fetchDeleteItemData = deleteItemFefchThunk(
+export const fetchDeleteItemData = deleteItemFetchThunk(
   "fetchDeleteItem",
   DELETE_TASK_API_URL
 );
-// Post thunk function 정의
-const postItemFefchThunk = (actionType, apiURL) => {
+
+// post thunk function 정의
+const postItemFetchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (postData) => {
     // console.log(postData);
     const options = {
@@ -50,18 +51,19 @@ const postItemFefchThunk = (actionType, apiURL) => {
     return await postRequest(apiURL, options);
   });
 };
+
 // post item
-export const fetchPostItemData = postItemFefchThunk(
-  "fetchPostItemData",
+export const fetchPostItemData = postItemFetchThunk(
+  "fetchPostItem",
   POST_TASK_API_URL
 );
 
-//handleFulfilled 함수 정의: 요청 성공 시 상태 업데이트 로직을 별도의 함수로 분리
+// handleFulfilled 함수 정의 : 요청 성공 시 상태 업데이트 로직을 별도의 함수로 분리
 const handleFulfilled = (stateKey) => (state, action) => {
   state[stateKey] = action.payload; // action.payload에 응답 데이터가 들어있음
 };
 
-//handleRejected 함수 정의: 요청 성공 시 상태 업데이트 로직을 별도의 함수로 분리
+// handleRejected 함수 정의 : 요청 실패 시 상태 업데이트 로직을 별도의 함수로 분리
 const handleRejected = (state, action) => {
   console.log("Error", action.payload);
   state.isError = true;
@@ -69,24 +71,24 @@ const handleRejected = (state, action) => {
 
 // create slice
 const apiSlice = createSlice({
-  name: "apis", //slice 기능 이름
+  name: "apis", // slice 기능 이름
   initialState: {
-    //초기 상태 지정
+    // 초기 상태 지정
     getItemsData: null,
     deleteItemData: null,
     postItemData: null,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGetItemsData.fulfilled, handleFulfilled("getItemsData")) //요청
-      .addCase(fetchGetItemsData.rejected, handleRejected) //요청 실패시
+      .addCase(fetchGetItemsData.fulfilled, handleFulfilled("getItemsData"))
+      .addCase(fetchGetItemsData.rejected, handleRejected)
 
-      .addCase(fetchDeleteItemData.fulfilled, handleFulfilled("deleteItemData")) //요청
-      .addCase(fetchDeleteItemData.rejected, handleRejected) //요청 실패시
+      .addCase(fetchDeleteItemData.fulfilled, handleFulfilled("deleteItemData"))
+      .addCase(fetchDeleteItemData.rejected, handleRejected)
 
-      .addCase(fetchPostItemData.fulfilled, handleFulfilled("postItemData")) //요청
-      .addCase(fetchPostItemData.rejected, handleRejected); //요청 실패시
+      .addCase(fetchPostItemData.fulfilled, handleFulfilled("postItemData"))
+      .addCase(fetchPostItemData.rejected, handleRejected);
   },
-}); //slice 객체 저장
+}); // slice 객체 저장
 
 export default apiSlice.reducer;

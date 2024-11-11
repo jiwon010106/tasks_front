@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import { closeModal } from "../redux/slices/modalSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { closeModal } from "../redux/slices/modalSlice";
 import { toast } from "react-toastify";
 import {
   fetchGetItemsData,
@@ -10,7 +10,6 @@ import {
 
 const Modal = () => {
   const dispatch = useDispatch();
-
   const { modalType, task } = useSelector((state) => state.modal);
   const user = useSelector((state) => state.auth.authData);
   // console.log(user.sub);
@@ -26,7 +25,7 @@ const Modal = () => {
   });
 
   const handleChange = (e) => {
-    const { name, value, checked, type } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value, // name 입력값을 받은 후 type이 checkbox인 경우 checked, 아닌 경우 value로 설정
@@ -36,10 +35,10 @@ const Modal = () => {
   // console.log(formData);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // 버튼 글릭 시 새로고침 방지
+    e.preventDefault(); // button 클릭 시 새로고침 방지
 
     if (!user.sub) {
-      toast.error("잘못된 사용자입니다.");
+      toast.error("잘못된 사용자 입니다.");
       return;
     }
 
@@ -58,20 +57,21 @@ const Modal = () => {
       return;
     }
 
+    // console.log(task);
+
     try {
       if (modalType === "create" && task === null) {
         await dispatch(fetchPostItemData(formData)).unwrap();
-        toast.success("할 일이 추가되었습니다.");
+        toast.success("할일이 추가되었습니다.");
       }
 
       handleCloseModal();
 
       await dispatch(fetchGetItemsData(user?.sub)).unwrap();
     } catch (error) {
-      console.error("Error WHile Adding Task", error);
-      toast.error("할 일 추가 중 오류가 발생했습니다.");
+      console.error("Error While Adding Task: ", error);
+      toast.error("할일 추가 중 오류가 발생했습니다.");
     }
-    console.log(formData);
   };
 
   const handleCloseModal = () => {
@@ -91,27 +91,21 @@ const Modal = () => {
 
   const modalTitle = showModalTitle(
     modalType,
-    "할 일 수정하기",
-    "할 일 상세보기",
-    "할 일 추가하기"
+    "할일 수정하기",
+    "할일 상세보기",
+    "할일 추가하기"
   );
 
   const btnTitle = showModalTitle(
     modalType,
-    "할 일 수정하기",
-    "할 일 상세보기",
-    "할 일 추가하기"
+    "할일 수정하기",
+    "",
+    "할일 추가하기"
   );
 
   return (
-    <div
-      className="modal fixed bg-black bg-opacity-50 w-full h-full left-0 top-0 flex items-center justify-center z-50"
-      onClick={handleCloseModal}
-    >
-      <div
-        className="form-wrapper bg-gray-700 rounded-e-md w-1/2 relative p-4"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="modal fixed bg-black bg-opacity-50 w-full h-full left-0 top-0 flex items-center justify-center z-50">
+      <div className="form-wrapper bg-gray-700 rounded-md w-1/2 relative p-4">
         <h2 className="text-2xl py-2 border-b border-gray-300 w-fit font-semibold">
           {modalTitle}
         </h2>
@@ -141,7 +135,7 @@ const Modal = () => {
               value={formData.description}
               placeholder="내용을 입력해 주세요..."
               onChange={handleChange}
-            />
+            ></textarea>
           </div>
           <div className="input-control">
             <label htmlFor="date">입력 날짜</label>

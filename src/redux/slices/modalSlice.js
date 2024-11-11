@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-//초기 상태 정의
 const initialState = {
   isOpen: false,
   modalType: "create",
@@ -14,7 +13,7 @@ const modalSlice = createSlice({
     openModal: (state, action) => {
       state.isOpen = true;
       state.modalType = action.payload.modalType;
-      state.task = action.payload.taks;
+      state.task = action.payload.task;
     },
 
     closeModal: (state) => {
