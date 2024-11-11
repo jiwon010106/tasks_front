@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 //초기 상태 정의
 const initialState = {
-  isOpen: true,
+  isOpen: false,
   modalType: "create",
   task: null,
 };

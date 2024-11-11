@@ -1,6 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { DELETE_TASK_API_URL, GET_TASKS_API_URL } from "../../utils/apiUrl";
-import { deleteRequest, getRequest } from "../../utils/requestMethods";
+import {
+  DELETE_TASK_API_URL,
+  GET_TASKS_API_URL,
+  POST_TASK_API_URL,
+} from "../../utils/apiUrl";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+} from "../../utils/requestMethods";
 
 const getItemsFefchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (userId) => {
@@ -32,6 +40,21 @@ export const fetchDeleteItemData = deleteItemFefchThunk(
   "fetchDeleteItem",
   DELETE_TASK_API_URL
 );
+// Post thunk function 정의
+const postItemFefchThunk = (actionType, apiURL) => {
+  return createAsyncThunk(actionType, async (postData) => {
+    // console.log(postData);
+    const options = {
+      body: JSON.stringify(postData), // 표준 json 문자열로 변환
+    };
+    return await postRequest(apiURL, options);
+  });
+};
+// post item
+export const fetchPostItemData = postItemFefchThunk(
+  "fetchPostItemData",
+  POST_TASK_API_URL
+);
 
 //handleFulfilled 함수 정의: 요청 성공 시 상태 업데이트 로직을 별도의 함수로 분리
 const handleFulfilled = (stateKey) => (state, action) => {
@@ -51,6 +74,7 @@ const apiSlice = createSlice({
     //초기 상태 지정
     getItemsData: null,
     deleteItemData: null,
+    postItemData: null,
   },
   extraReducers: (builder) => {
     builder
@@ -58,7 +82,10 @@ const apiSlice = createSlice({
       .addCase(fetchGetItemsData.rejected, handleRejected) //요청 실패시
 
       .addCase(fetchDeleteItemData.fulfilled, handleFulfilled("deleteItemData")) //요청
-      .addCase(fetchDeleteItemData.rejected, handleRejected); //요청 실패시
+      .addCase(fetchDeleteItemData.rejected, handleRejected) //요청 실패시
+
+      .addCase(fetchPostItemData.fulfilled, handleFulfilled("postItemData")) //요청
+      .addCase(fetchPostItemData.rejected, handleRejected); //요청 실패시
   },
 }); //slice 객체 저장
 
