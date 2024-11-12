@@ -22,7 +22,7 @@ const Navbar = ({ menuIdx }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { given_name } = user || {};
 
-  console.log(user);
+  // console.log(user);
 
   const handleLoginSucess = useCallback(
     (response) => {

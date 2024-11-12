@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal } from "../redux/slices/modalSlice";
@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import {
   fetchGetItemsData,
   fetchPostItemData,
+  fetchUpdateItemData,
 } from "./../redux/slices/apiSlice";
 
 const Modal = () => {
@@ -38,7 +39,7 @@ const Modal = () => {
     e.preventDefault(); // button 클릭 시 새로고침 방지
 
     if (!user.sub) {
-      toast.error("잘못된 사용자 입니다.");
+      toast.error("잘못된 사용자입니다.");
       return;
     }
 
@@ -62,7 +63,10 @@ const Modal = () => {
     try {
       if (modalType === "create" && task === null) {
         await dispatch(fetchPostItemData(formData)).unwrap();
-        toast.success("할일이 추가되었습니다.");
+        toast.success("할 일이 추가되었습니다.");
+      } else if (modalType === "update" && task) {
+        await dispatch(fetchUpdateItemData(formData)).unwrap(); //todo: update 함수 변경
+        toast.success("할 일이 수정되었습니다.");
       }
 
       handleCloseModal();
@@ -70,7 +74,7 @@ const Modal = () => {
       await dispatch(fetchGetItemsData(user?.sub)).unwrap();
     } catch (error) {
       console.error("Error While Adding Task: ", error);
-      toast.error("할일 추가 중 오류가 발생했습니다.");
+      toast.error("할 일 추가 중 오류가 발생했습니다.");
     }
   };
 
@@ -91,21 +95,54 @@ const Modal = () => {
 
   const modalTitle = showModalTitle(
     modalType,
-    "할일 수정하기",
-    "할일 상세보기",
-    "할일 추가하기"
+    "할 일 수정하기",
+    "할 일 상세보기",
+    "할 일 추가하기"
   );
 
   const btnTitle = showModalTitle(
     modalType,
-    "할일 수정하기",
+    "할 일 수정하기",
     "",
-    "할일 추가하기"
+    "할 일 추가하기"
   );
 
+  // console.log(task);
+  console.log(modalType);
+
+  useEffect(() => {
+    if ((modalType === "details" && task) || (modalType === "update" && task)) {
+      setFormData({
+        title: task.title,
+        description: task.description,
+        date: task.date,
+        isCompleted: task.iscompleted,
+        isImportant: task.isimportant,
+        id: task._id,
+      });
+    } else {
+      setFormData({
+        title: "",
+        description: "",
+        date: "",
+        isCompleted: false,
+        isImportant: false,
+        userId: user?.sub,
+      });
+    }
+  }, [modalType, task, user?.sub]);
+
+  console.log(task);
+
   return (
-    <div className="modal fixed bg-black bg-opacity-50 w-full h-full left-0 top-0 flex items-center justify-center z-50">
-      <div className="form-wrapper bg-gray-700 rounded-md w-1/2 relative p-4">
+    <div
+      className="modal fixed bg-black bg-opacity-50 w-full h-full left-0 top-0 flex items-center justify-center z-50"
+      onClick={handleCloseModal} //바깥 여백 클릭 시 모달 닫힘
+    >
+      <div
+        className="form-wrapper bg-gray-700 rounded-md w-1/2 relative p-4"
+        onClick={(e) => e.stopPropagation()} //
+      >
         <h2 className="text-2xl py-2 border-b border-gray-300 w-fit font-semibold">
           {modalTitle}
         </h2>
@@ -124,6 +161,7 @@ const Modal = () => {
               value={formData.title}
               placeholder="제목을 입력해 주세요..."
               onChange={handleChange}
+              {...(modalType === "details" && { disabled: true })}
             />
           </div>
           <div className="input-control">
@@ -135,6 +173,7 @@ const Modal = () => {
               value={formData.description}
               placeholder="내용을 입력해 주세요..."
               onChange={handleChange}
+              {...(modalType === "details" && { disabled: true })}
             ></textarea>
           </div>
           <div className="input-control">
@@ -145,6 +184,7 @@ const Modal = () => {
               name="date"
               value={formData.date}
               onChange={handleChange}
+              {...(modalType === "details" && { disabled: true })}
             />
           </div>
           <div className="input-control toggler">
@@ -155,6 +195,7 @@ const Modal = () => {
               name="isCompleted"
               checked={formData.isCompleted}
               onChange={handleChange}
+              {...(modalType === "details" && { disabled: true })}
             />
           </div>
           <div className="input-control toggler">
@@ -165,11 +206,14 @@ const Modal = () => {
               name="isImportant"
               checked={formData.isImportant}
               onChange={handleChange}
+              {...(modalType === "details" && { disabled: true })}
             />
           </div>
           <div className="submit-btn flex justify-end">
             <button
-              className="flex justify-end bg-black w-fit py-3 px-6 rounded-md hover:bg-slate-900"
+              className={`flex justify-end bg-black w-fit py-3 px-6 rounded-md hover:bg-slate-900 ${
+                modalType === "details" ? "hidden" : ""
+              }`}
               type="submit"
             >
               {btnTitle}
