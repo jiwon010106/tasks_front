@@ -140,10 +140,10 @@ const Modal = () => {
       onClick={handleCloseModal} //바깥 여백 클릭 시 모달 닫힘
     >
       <div
-        className="form-wrapper bg-gray-700 rounded-md w-1/2 relative p-4"
+        className="form-wrapper bg-gray-700 rounded-md lg:w-1/2 sm:w-3/4 w-4/5 relative p-4"
         onClick={(e) => e.stopPropagation()} //
       >
-        <h2 className="text-2xl py-2 border-b border-gray-300 w-fit font-semibold">
+        <h2 className="lg:text-2xl text-xl py-2 border-b border-gray-300 w-fit font-semibold">
           {modalTitle}
         </h2>
         <IoMdClose
@@ -162,6 +162,8 @@ const Modal = () => {
               placeholder="제목을 입력해 주세요..."
               onChange={handleChange}
               {...(modalType === "details" && { disabled: true })}
+              className="sm:placeholder:text-[1rem] placeholder:text-[0.75rem]
+              sm:text-[1rem] text-[0.75rem]"
             />
           </div>
           <div className="input-control">
@@ -174,6 +176,8 @@ const Modal = () => {
               placeholder="내용을 입력해 주세요..."
               onChange={handleChange}
               {...(modalType === "details" && { disabled: true })}
+              className="sm:placeholder:text-[1rem] placeholder:text-[0.75rem]
+              sm:text-[1rem] text-[0.75rem]"
             ></textarea>
           </div>
           <div className="input-control">
@@ -185,6 +189,8 @@ const Modal = () => {
               value={formData.date}
               onChange={handleChange}
               {...(modalType === "details" && { disabled: true })}
+              className="sm:placeholder:text-[1rem] placeholder:text-[0.75rem]
+              sm:text-[1rem] text-[0.75rem]"
             />
           </div>
           <div className="input-control toggler">
@@ -211,7 +217,7 @@ const Modal = () => {
           </div>
           <div className="submit-btn flex justify-end">
             <button
-              className={`flex justify-end bg-black w-fit py-3 px-6 rounded-md hover:bg-slate-900 ${
+              className={`flex justify-end bg-black w-fit py-3 px-6 rounded-md hover:bg-slate-900 lg:text-[1rem] text-[0.875rem] ${
                 modalType === "details" ? "hidden" : ""
               }`}
               type="submit"
