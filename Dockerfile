@@ -7,7 +7,7 @@ WORKDIR /app
 
 
 # Copy the package.json file to the working directory
-COPY package*.json .
+COPY package.json .
 
 
 # Install the dependencies specified in package.json
