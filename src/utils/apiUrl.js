@@ -1,5 +1,5 @@
-const rootPath = "http://localhost:8000";
-// const rootPath = "http://23.20.20.90";
+// const rootPath = "http://localhost:8000";
+const rootPath = "https://d3n8qcqi8v4h0x.cloudfront.net";
 const GET_TASKS_API_URL = `${rootPath}/getTasks`;
 const DELETE_TASK_API_URL = `${rootPath}/deleteTask`;
 const POST_TASK_API_URL = `${rootPath}/postTask`;
